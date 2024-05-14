@@ -1,0 +1,109 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1715710407656-1
+      author: IvanovMaxim
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_buses
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(8)
+            tableName: buses
+  - changeSet:
+      id: 1715710407656-2
+      author: IvanovMaxim
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_buses_stops
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: buses_id
+                  type: BIGINT
+              - column:
+                  name: stops_id
+                  type: BIGINT
+              - column:
+                  name: forward_direction
+                  type: BOOLEAN
+              - column:
+                  name: reverse_direction
+                  type: BOOLEAN
+            tableName: buses_stops
+  - changeSet:
+      id: 1715710407656-3
+      author: IvanovMaxim
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_stops
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(128)
+              - column:
+                  name: n_latitude
+                  type: DOUBLE
+              - column:
+                  name: e_longitude
+                  type: DOUBLE
+            tableName: stops
+  - changeSet:
+      id: 1715710407656-4
+      author: IvanovMaxim
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: name
+            constraintName: uc_buses_name
+            tableName: buses
+  - changeSet:
+      id: 1715710407656-5
+      author: IvanovMaxim
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: buses_id
+            baseTableName: buses_stops
+            constraintName: FK_BUSES_STOPS_ON_BUSES
+            referencedColumnNames: id
+            referencedTableName: buses
+  - changeSet:
+      id: 1715710407656-6
+      author: IvanovMaxim
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: stops_id
+            baseTableName: buses_stops
+            constraintName: FK_BUSES_STOPS_ON_STOPS
+            referencedColumnNames: id
+            referencedTableName: stops
+
