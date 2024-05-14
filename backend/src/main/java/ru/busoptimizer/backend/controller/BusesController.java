@@ -32,7 +32,7 @@ public class BusesController {
 
     @PutMapping("/buses/{id}")
     public Buses updateBus(@PathVariable long id, @RequestBody Buses bus) {
-        return busesService.updateBus(id,bus);
+        return busesService.updateBus(id, bus);
     }
 
     @DeleteMapping("/buses/{id}")
