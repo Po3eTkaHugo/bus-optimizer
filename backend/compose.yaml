@@ -1,0 +1,11 @@
+services:
+  postgres:
+    container_name: psql_bus_optimizer
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=postgres'
+      - 'POSTGRES_PASSWORD=1234'
+      - 'POSTGRES_USER=postgres'
+    ports:
+      - '5435:5432'
+    restart: unless-stopped
