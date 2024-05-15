@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1715710407656-1
+      id: 1715792180813-1
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -21,7 +21,7 @@ databaseChangeLog:
                   type: VARCHAR(8)
             tableName: buses
   - changeSet:
-      id: 1715710407656-2
+      id: 1715792180813-2
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -32,14 +32,14 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_buses_stops
+                    primaryKeyName: pk_buses_points
                   name: id
                   type: BIGINT
               - column:
                   name: buses_id
                   type: BIGINT
               - column:
-                  name: stops_id
+                  name: point_id
                   type: BIGINT
               - column:
                   name: forward_direction
@@ -47,9 +47,34 @@ databaseChangeLog:
               - column:
                   name: reverse_direction
                   type: BOOLEAN
-            tableName: buses_stops
+            tableName: buses_points
   - changeSet:
-      id: 1715710407656-3
+      id: 1715792180813-3
+      author: IvanovMaxim
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_points
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: n_latitude
+                  type: DOUBLE
+              - column:
+                  name: e_longitude
+                  type: DOUBLE
+              - column:
+                  name: stops_id
+                  type: BIGINT
+            tableName: points
+  - changeSet:
+      id: 1715792180813-4
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -67,16 +92,10 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                   name: name
-                  type: VARCHAR(128)
-              - column:
-                  name: n_latitude
-                  type: DOUBLE
-              - column:
-                  name: e_longitude
-                  type: DOUBLE
+                  type: VARCHAR(100)
             tableName: stops
   - changeSet:
-      id: 1715710407656-4
+      id: 1715792180813-5
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -85,25 +104,36 @@ databaseChangeLog:
             constraintName: uc_buses_name
             tableName: buses
   - changeSet:
-      id: 1715710407656-5
+      id: 1715792180813-6
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: buses_id
-            baseTableName: buses_stops
-            constraintName: FK_BUSES_STOPS_ON_BUSES
+            baseTableName: buses_points
+            constraintName: FK_BUSES_POINTS_ON_BUSES
             referencedColumnNames: id
             referencedTableName: buses
   - changeSet:
-      id: 1715710407656-6
+      id: 1715792180813-7
+      author: IvanovMaxim
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: point_id
+            baseTableName: buses_points
+            constraintName: FK_BUSES_POINTS_ON_POINT
+            referencedColumnNames: id
+            referencedTableName: points
+  - changeSet:
+      id: 1715792180813-8
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: stops_id
-            baseTableName: buses_stops
-            constraintName: FK_BUSES_STOPS_ON_STOPS
+            baseTableName: points
+            constraintName: FK_POINTS_ON_STOPS
             referencedColumnNames: id
             referencedTableName: stops
 

@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +25,6 @@ public class Buses {
     private String name;
 
     @OneToMany(mappedBy = "buses")
-    private List<BusesStops> busesStops = new ArrayList<>();
+    private List<BusesPoints> busesStops = new ArrayList<>();
 
 }

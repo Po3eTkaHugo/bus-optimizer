@@ -21,13 +21,10 @@ public class Stops {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 128)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
     @OneToMany(mappedBy = "stops")
-    private List<BusesStops> busesStops = new ArrayList<>();
-
-    @OneToMany(mappedBy = "stops")
-    private List<Coordinates> coordinates = new ArrayList<>();
+    private List<Points> coordinates = new ArrayList<>();
 
 }

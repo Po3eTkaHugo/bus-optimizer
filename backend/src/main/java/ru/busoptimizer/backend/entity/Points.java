@@ -6,13 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "coordinates")
-public class Coordinates {
+@Table(name = "points")
+public class Points {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -23,6 +26,9 @@ public class Coordinates {
 
     @Column(name = "e_longitude")
     private Double e_longitude;
+
+    @OneToMany(mappedBy = "points")
+    private List<BusesPoints> busesPoints = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "stops_id")

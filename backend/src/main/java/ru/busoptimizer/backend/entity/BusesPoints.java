@@ -11,8 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "buses_stops")
-public class BusesStops {
+@Table(name = "buses_points")
+public class BusesPoints {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -23,8 +23,8 @@ public class BusesStops {
     private Buses buses;
 
     @ManyToOne
-    @JoinColumn(name = "stops_id")
-    private Stops stops;
+    @JoinColumn(name = "point_id")
+    private Points points;
 
     @Column(name = "forward_direction")
     private Boolean forward_direction;
