@@ -23,12 +23,12 @@ public class BusesStopsService {
 
     public BusesStops getBusStop(long id) {
         return busesStopsRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Невозможно найти данные. Автобус с id = " + id + " не найден в базе данных."));
+                () -> new NotFoundException("Невозможно найти данные. Связи автобуса и остановки с id = " + id + " не найдено в базе данных."));
     }
 
     public BusesStops updateBusStop(long id, BusesStops newBusStop) {
         BusesStops busStop = busesStopsRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Невозможно обновить данные. Автобус с id = " + id + " не найден в базе данных."));
+                () -> new NotFoundException("Невозможно обновить данные. Связи автобуса и остановки с id = " + id + " не найдено в базе данных."));
         busStop.setBuses(newBusStop.getBuses());
         busStop.setStops(newBusStop.getStops());
         busStop.setForward_direction(newBusStop.getForward_direction());
@@ -39,7 +39,7 @@ public class BusesStopsService {
 
     public void deleteBusStop(long id) {
         BusesStops busStop = busesStopsRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Невозможно удалить данные. Автобус с id = " + id + " не найден в базе данных."));
+                () -> new NotFoundException("Невозможно удалить данные. Связи автобуса и остановки с id = " + id + " не найдено в базе данных."));
         if (busStop != null) {
             busesStopsRepository.deleteById(id);
         }

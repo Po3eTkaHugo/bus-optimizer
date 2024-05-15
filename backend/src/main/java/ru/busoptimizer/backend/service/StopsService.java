@@ -23,22 +23,20 @@ public class StopsService {
 
     public Stops getStop(long id) {
         return stopsRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Невозможно найти данные. Остановка с id = " + id + " не найден в базе данных."));
+                () -> new NotFoundException("Невозможно найти данные. Остановка с id = " + id + " не найдена в базе данных."));
     }
 
     public Stops updateStop(long id, Stops newStop) {
         Stops stop = stopsRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Невозможно обновить данные. Автобус с id = " + id + " не найден в базе данных."));
+                () -> new NotFoundException("Невозможно обновить данные. Остановка с id = " + id + " не найдена в базе данных."));
         stop.setName(newStop.getName());
-        stop.setN_latitude(newStop.getN_latitude());
-        stop.setE_longitude(newStop.getE_longitude());
 
         return stopsRepository.save(stop);
     }
 
     public void deleteStop(long id) {
         Stops stop = stopsRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Невозможно удалить данные. Автобус с id = " + id + " не найден в базе данных."));
+                () -> new NotFoundException("Невозможно удалить данные. Остановка с id = " + id + " не найдена в базе данных."));
         if (stop != null) {
             stopsRepository.deleteById(id);
         }
