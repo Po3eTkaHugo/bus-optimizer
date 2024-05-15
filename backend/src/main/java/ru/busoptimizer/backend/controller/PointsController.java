@@ -3,7 +3,9 @@ package ru.busoptimizer.backend.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.busoptimizer.backend.dto.PointsDto;
 import ru.busoptimizer.backend.entity.Points;
+import ru.busoptimizer.backend.mapper.PointsMapperImpl;
 import ru.busoptimizer.backend.service.PointsService;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/v1/")
 public class PointsController {
     private final PointsService pointsService;
+    private final PointsMapperImpl pointsMapper;
 
     @GetMapping("/points/{id}")
     public Points getPoint(@PathVariable long id) {
@@ -26,17 +29,18 @@ public class PointsController {
 
     @PostMapping("/points")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Points addPoint(@RequestBody Points point) {
-        return pointsService.savePoint(point);
+    public Points addPoint(@RequestBody PointsDto pointDto) {
+        return pointsService.savePoint(pointsMapper.toEntity(pointDto));
     }
 
     @PutMapping("/points/{id}")
-    public Points updatePoint(@PathVariable long id, @RequestBody Points point) {
-        return pointsService.updatePoint(id, point);
+    public Points updatePoint(@PathVariable long id, @RequestBody PointsDto pointDto) {
+        return pointsService.updatePoint(id, pointsMapper.toEntity(pointDto));
     }
 
     @DeleteMapping("/points/{id}")
-    public void deletePoint(@PathVariable long id) {
+    public HttpStatus deletePoint(@PathVariable long id) {
         pointsService.deletePoint(id);
+        return HttpStatus.OK;
     }
 }
