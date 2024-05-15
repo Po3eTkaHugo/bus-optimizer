@@ -25,6 +25,6 @@ public class Buses {
     private String name;
 
     @OneToMany(mappedBy = "buses")
-    private List<BusesPoints> busesStops = new ArrayList<>();
+    private List<BusesPoints> busesPoints = new ArrayList<>();
 
 }
