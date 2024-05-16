@@ -21,8 +21,8 @@ public class StopsController {
     private final StopsMapperImpl stopsMapper;
 
     @GetMapping("/stops/{id}")
-    public Stops getStop(@PathVariable long id) {
-        return stopsService.getStop(id);
+    public StopsDto getStop(@PathVariable long id) {
+        return stopsMapper.toDto(stopsService.getStop(id));
     }
 
     @GetMapping("/stops")

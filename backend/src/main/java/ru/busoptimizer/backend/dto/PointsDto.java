@@ -8,5 +8,5 @@ import java.io.Serializable;
 public record PointsDto(
         Double n_latitude,
         Double e_longitude,
-        StopsDto stops) implements Serializable {
+        Long stopsId) implements Serializable {
 }

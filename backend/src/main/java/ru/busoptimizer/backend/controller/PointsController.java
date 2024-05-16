@@ -18,8 +18,8 @@ public class PointsController {
     private final PointsMapperImpl pointsMapper;
 
     @GetMapping("/points/{id}")
-    public Points getPoint(@PathVariable long id) {
-        return pointsService.getPoint(id);
+    public PointsDto getPoint(@PathVariable long id) {
+        return pointsMapper.toDto(pointsService.getPoint(id));
     }
 
     @GetMapping("/points")
