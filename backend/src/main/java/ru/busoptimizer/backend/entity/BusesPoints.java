@@ -26,10 +26,7 @@ public class BusesPoints {
     @JoinColumn(name = "point_id")
     private Points points;
 
-    @Column(name = "forward_direction")
-    private Boolean forward_direction;
-
-    @Column(name = "reverse_direction")
-    private Boolean reverse_direction;
+    @Column(name = "direction")
+    private Boolean direction;
 
 }

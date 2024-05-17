@@ -8,6 +8,5 @@ import java.io.Serializable;
 public record BusesPointsDto(
         Long busesId,
         Long pointsId,
-        Boolean forward_direction,
-        Boolean reverse_direction) implements Serializable {
+        Boolean direction) implements Serializable {
 }

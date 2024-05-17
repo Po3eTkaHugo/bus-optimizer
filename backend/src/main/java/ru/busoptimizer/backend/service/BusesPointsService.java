@@ -31,8 +31,7 @@ public class BusesPointsService {
                 () -> new NotFoundException("Невозможно обновить данные. Связи автобуса и остановки с id = " + id + " не найдено в базе данных."));
         busPoint.setBuses(newBusPoint.getBuses());
         busPoint.setPoints(newBusPoint.getPoints());
-        busPoint.setForward_direction(newBusPoint.getForward_direction());
-        busPoint.setReverse_direction(newBusPoint.getReverse_direction());
+        busPoint.setDirection(newBusPoint.getDirection());
 
         return busesPointsRepository.save(busPoint);
     }

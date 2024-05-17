@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1715792180813-1
+      id: 1715967520343-1
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -21,7 +21,7 @@ databaseChangeLog:
                   type: VARCHAR(8)
             tableName: buses
   - changeSet:
-      id: 1715792180813-2
+      id: 1715967520343-2
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -42,14 +42,11 @@ databaseChangeLog:
                   name: point_id
                   type: BIGINT
               - column:
-                  name: forward_direction
-                  type: BOOLEAN
-              - column:
-                  name: reverse_direction
+                  name: direction
                   type: BOOLEAN
             tableName: buses_points
   - changeSet:
-      id: 1715792180813-3
+      id: 1715967520343-3
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -74,7 +71,7 @@ databaseChangeLog:
                   type: BIGINT
             tableName: points
   - changeSet:
-      id: 1715792180813-4
+      id: 1715967520343-4
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -95,7 +92,7 @@ databaseChangeLog:
                   type: VARCHAR(100)
             tableName: stops
   - changeSet:
-      id: 1715792180813-5
+      id: 1715967520343-5
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -104,7 +101,7 @@ databaseChangeLog:
             constraintName: uc_buses_name
             tableName: buses
   - changeSet:
-      id: 1715792180813-6
+      id: 1715967520343-6
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -115,7 +112,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: buses
   - changeSet:
-      id: 1715792180813-7
+      id: 1715967520343-7
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -126,7 +123,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: points
   - changeSet:
-      id: 1715792180813-8
+      id: 1715967520343-8
       author: IvanovMaxim
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
