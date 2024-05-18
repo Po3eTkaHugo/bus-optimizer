@@ -45,25 +45,29 @@ public class DataController {
         Buses bus = busesService.saveBus(busesMapper.toEntity(new BusesDto(busName)));
 
         List<Object> bothDirections = (List<Object>) json.get("features");
-        Map<String, Object> forwardDirection = (Map<String, Object>) bothDirections.get(0);
-        List<Map<String, Object>> allPoints = (List<Map<String, Object>>) forwardDirection.get("features");
 
-        for(int i = 0; i < allPoints.size(); i+= 2) {
-            Map<String, Object> firstPoint = allPoints.get(i);
-            String stopName = (String) firstPoint.get("name");                              //Название Остановки
-            List<Double> pointCoordinates = (List<Double>) firstPoint.get("coordinates");   //Координаты точки остановки
+        for (int k = 0; k < 2; k++) {
+            Map<String, Object> forwardDirection = (Map<String, Object>) bothDirections.get(k);
+            List<Map<String, Object>> allPoints = (List<Map<String, Object>>) forwardDirection.get("features");
 
-            Stops stop = stopsService.saveStop(stopsMapper.toEntity(new StopsDto(stopName)));
+            for(int i = 0; i < allPoints.size(); i+= 2) {
+                Map<String, Object> firstPoint = allPoints.get(i);
+                String stopName = (String) firstPoint.get("name");                              //Название Остановки
+                List<Double> pointCoordinates = (List<Double>) firstPoint.get("coordinates");   //Координаты точки остановки
 
-            Points point = pointsService.savePoint(pointsMapper.toEntity(new PointsDto(
-                    pointCoordinates.get(1),
-                    pointCoordinates.get(0),
-                    stop.getId())));
+                Stops stop = stopsService.saveStop(stopsMapper.toEntity(new StopsDto(stopName)));
 
-            BusesPoints busPoint = busesPointsService.saveBusPoint(busesPointsMapper.toEntity(new BusesPointsDto(
-                    bus.getId(),
-                    point.getId(),
-                    false)));
+                Points point = pointsService.savePoint(pointsMapper.toEntity(new PointsDto(
+                        pointCoordinates.get(1),
+                        pointCoordinates.get(0),
+                        stop.getId())));
+
+                BusesPoints busPoint = busesPointsService.saveBusPoint(busesPointsMapper.toEntity(new BusesPointsDto(
+                        bus.getId(),
+                        point.getId(),
+                        k == 1)));
+            }
+
         }
 
         return HttpStatus.OK;
