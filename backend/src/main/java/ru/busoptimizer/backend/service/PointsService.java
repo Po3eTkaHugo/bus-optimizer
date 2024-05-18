@@ -13,6 +13,7 @@ import ru.busoptimizer.backend.repository.PointsRepository;
 import ru.busoptimizer.backend.repository.StopsRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
@@ -93,6 +94,15 @@ public class PointsService {
                 Stops newStop = stopsService.saveStop(stopsMapper.toEntity(new StopsDto(
                         mainName + " - " + stopsRepository.countByNameContaining(mainName))));
                 idHerStop = newStop.getId();
+            }
+            else {
+                List<Points> existingPoints = pointsRepository.findByStops_Id(idHerStop);
+
+                for (Points existPoint : existingPoints) {
+                    if (Objects.equals(point.getN_latitude(), existPoint.getN_latitude()) && Objects.equals(point.getE_longitude(), existPoint.getE_longitude())) {
+                        return existPoint;
+                    }
+                }
             }
 
 
