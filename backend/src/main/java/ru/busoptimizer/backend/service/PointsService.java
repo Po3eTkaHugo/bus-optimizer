@@ -63,45 +63,47 @@ public class PointsService {
                 }
             }
         }*/
+        List<Points> stopsPoints = pointsRepository.findByStops_Id(point.getStops().getId());
+        if (!stopsPoints.isEmpty()) {
+            String mainName = stopsRepository.getById(point.getStops().getId()).getName();
 
-        String mainName = point.getStops().getName();
+            boolean findHerStop = false;
+            long idHerStop = point.getStops().getId();
 
-        if (mainName == null)
-            return pointsRepository.save(point);
+            List<Stops> allStops = stopsRepository.findByNameContaining(mainName);
+            for (Stops stop : allStops) {
+                List<Points> otherPoints = pointsRepository.findByStops_Id(stop.getId());
 
-        boolean findHerStop = false;
-        long idHerStop = point.getStops().getId();
+                for(Points otherPoint : otherPoints) {
+                    double otherDistance = calcDistance(point.getN_latitude(), point.getE_longitude(), otherPoint.getN_latitude(), otherPoint.getE_longitude());
 
-        List<Stops> allStops = stopsRepository.findByNameContaining(mainName);
-        for (Stops stop : allStops) {
-            List<Points> otherPoints = pointsRepository.findByStops_Id(stop.getId());
+                    if (otherDistance <= 0.5) {
+                        findHerStop = true;
+                        break;
+                    }
+                }
 
-            for(Points otherPoint : otherPoints) {
-                double otherDistance = calcDistance(point.getN_latitude(), point.getE_longitude(), otherPoint.getN_latitude(), otherPoint.getE_longitude());
-
-                if (otherDistance <= 0.5) {
-                    findHerStop = true;
+                if (findHerStop) {
+                    idHerStop = stop.getId();
                     break;
                 }
             }
 
-            if (findHerStop) {
-                idHerStop = stop.getId();
-                break;
+            if (!findHerStop) {
+                Stops newStop = stopsService.saveStop(stopsMapper.toEntity(new StopsDto(
+                        mainName + " - " + stopsRepository.countByNameContaining(mainName))));
+                idHerStop = newStop.getId();
             }
+
+
+            return pointsRepository.save(pointsMapper.toEntity(new PointsDto(
+                    point.getN_latitude(),
+                    point.getE_longitude(),
+                    idHerStop)));
         }
 
-        if (!findHerStop) {
-            Stops newStop = stopsService.saveStop(stopsMapper.toEntity(new StopsDto(
-                    mainName + " - " + stopsRepository.countByNameContaining(mainName))));
-            idHerStop = newStop.getId();
-        }
+        return pointsRepository.save(point);
 
-
-        return pointsRepository.save(pointsMapper.toEntity(new PointsDto(
-                point.getN_latitude(),
-                point.getE_longitude(),
-                idHerStop)));
     }
 
     public Points getPoint(long id) {
