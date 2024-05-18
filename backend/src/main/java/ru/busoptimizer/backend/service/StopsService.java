@@ -8,6 +8,7 @@ import ru.busoptimizer.backend.repository.StopsRepository;
 
 import java.util.List;
 
+
 @RequiredArgsConstructor
 @Service
 public class StopsService {
@@ -18,7 +19,9 @@ public class StopsService {
     }
 
     public Stops saveStop(Stops stop) {
-        return stopsRepository.save(stop);
+        Stops stopInDB = stopsRepository.findByName(stop.getName());
+
+        return stopInDB == null ? stopsRepository.save(stop) : stopInDB;
     }
 
     public Stops getStop(long id) {

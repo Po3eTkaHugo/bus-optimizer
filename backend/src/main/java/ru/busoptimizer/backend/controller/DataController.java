@@ -20,6 +20,7 @@ import ru.busoptimizer.backend.service.BusesService;
 import ru.busoptimizer.backend.service.PointsService;
 import ru.busoptimizer.backend.service.StopsService;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -47,21 +48,23 @@ public class DataController {
         Map<String, Object> forwardDirection = (Map<String, Object>) bothDirections.get(0);
         List<Map<String, Object>> allPoints = (List<Map<String, Object>>) forwardDirection.get("features");
 
-        Map<String, Object> firstPoint = allPoints.get(0);
-        String stopName = (String) firstPoint.get("name");                              //Название Остановки
-        List<Double> pointCoordinates = (List<Double>) firstPoint.get("coordinates");   //Координаты точки остановки
+        for(int i = 0; i < allPoints.size(); i+= 2) {
+            Map<String, Object> firstPoint = allPoints.get(i);
+            String stopName = (String) firstPoint.get("name");                              //Название Остановки
+            List<Double> pointCoordinates = (List<Double>) firstPoint.get("coordinates");   //Координаты точки остановки
 
-        Stops stop = stopsService.saveStop(stopsMapper.toEntity(new StopsDto(stopName)));
+            Stops stop = stopsService.saveStop(stopsMapper.toEntity(new StopsDto(stopName)));
 
-        Points point = pointsService.savePoint(pointsMapper.toEntity(new PointsDto(
-                pointCoordinates.get(1),
-                pointCoordinates.get(0),
-                stop.getId())));
+            Points point = pointsService.savePoint(pointsMapper.toEntity(new PointsDto(
+                    pointCoordinates.get(1),
+                    pointCoordinates.get(0),
+                    stop.getId())));
 
-        BusesPoints busPoint = busesPointsService.saveBusPoint(busesPointsMapper.toEntity(new BusesPointsDto(
-                bus.getId(),
-                point.getId(),
-                false)));
+            BusesPoints busPoint = busesPointsService.saveBusPoint(busesPointsMapper.toEntity(new BusesPointsDto(
+                    bus.getId(),
+                    point.getId(),
+                    false)));
+        }
 
         return HttpStatus.OK;
     }

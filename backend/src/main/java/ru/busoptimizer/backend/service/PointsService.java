@@ -2,23 +2,106 @@ package ru.busoptimizer.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.busoptimizer.backend.dto.PointsDto;
+import ru.busoptimizer.backend.dto.StopsDto;
 import ru.busoptimizer.backend.entity.Points;
+import ru.busoptimizer.backend.entity.Stops;
 import ru.busoptimizer.backend.exception_handler.NotFoundException;
+import ru.busoptimizer.backend.mapper.PointsMapperImpl;
+import ru.busoptimizer.backend.mapper.StopsMapperImpl;
 import ru.busoptimizer.backend.repository.PointsRepository;
+import ru.busoptimizer.backend.repository.StopsRepository;
 
 import java.util.List;
+
+import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
+import static java.lang.Math.asin;
+import static java.lang.Math.cos;
+import static java.lang.Math.sqrt;
 
 @RequiredArgsConstructor
 @Service
 public class PointsService {
     private final PointsRepository pointsRepository;
+    private final StopsRepository stopsRepository;
+    private final StopsService stopsService;
+    private final StopsMapperImpl stopsMapper;
+    private final PointsMapperImpl pointsMapper;
 
     public List<Points> getAllPoints() {
         return pointsRepository.findAll();
     }
 
     public Points savePoint(Points point) {
-        return pointsRepository.save(point);
+        /*List<Points> stopsPoints = pointsRepository.findByStops_Id(point.getStops().getId());
+
+        if (!stopsPoints.isEmpty()) {
+            for(Points stopPoint : stopsPoints) {
+                double distance = calcDistance(point.getN_latitude(), point.getE_longitude(), stopPoint.getN_latitude(), stopPoint.getE_longitude());
+
+                if (distance > 0.5) {
+                    String mainName = stopPoint.getStops().getName();
+                    List<Stops> allOtherStops = stopsRepository.findByNameContaining(mainName);
+
+                    allOtherStops.forEach(otherStop -> {
+                        List<Points> otherPoints = pointsRepository.findByStops_Id(otherStop.getId());
+                        otherPoints.forEach(otherPoint -> {
+                            double otherDistance = calcDistance(point.getN_latitude(), point.getE_longitude(), otherPoint.getN_latitude(), otherPoint.getE_longitude());
+
+                            if (otherDistance > 0.5) {
+                                Stops newStop = stopsService.saveStop(stopsMapper.toEntity(new StopsDto(
+                                        mainName + " - " + stopsRepository.countByNameContaining(mainName))));
+
+                                pointsRepository.save(pointsMapper.toEntity(new PointsDto(
+                                        point.getN_latitude(),
+                                        point.getE_longitude(),
+                                        newStop.getId())));
+                            }
+                        });
+                    });
+                }
+            }
+        }*/
+
+        String mainName = point.getStops().getName();
+
+        if (mainName == null)
+            return pointsRepository.save(point);
+
+        boolean findHerStop = false;
+        long idHerStop = point.getStops().getId();
+
+        List<Stops> allStops = stopsRepository.findByNameContaining(mainName);
+        for (Stops stop : allStops) {
+            List<Points> otherPoints = pointsRepository.findByStops_Id(stop.getId());
+
+            for(Points otherPoint : otherPoints) {
+                double otherDistance = calcDistance(point.getN_latitude(), point.getE_longitude(), otherPoint.getN_latitude(), otherPoint.getE_longitude());
+
+                if (otherDistance <= 0.5) {
+                    findHerStop = true;
+                    break;
+                }
+            }
+
+            if (findHerStop) {
+                idHerStop = stop.getId();
+                break;
+            }
+        }
+
+        if (!findHerStop) {
+            Stops newStop = stopsService.saveStop(stopsMapper.toEntity(new StopsDto(
+                    mainName + " - " + stopsRepository.countByNameContaining(mainName))));
+            idHerStop = newStop.getId();
+        }
+
+
+        return pointsRepository.save(pointsMapper.toEntity(new PointsDto(
+                point.getN_latitude(),
+                point.getE_longitude(),
+                idHerStop)));
     }
 
     public Points getPoint(long id) {
@@ -42,6 +125,17 @@ public class PointsService {
         if (point != null) {
             pointsRepository.deleteById(id);
         }
+    }
+
+    private double calcDistance(double NLat1, double ELong1, double NLat2, double ELong2) {
+        double N1 = toRadians(NLat1);
+        double E1 = toRadians(ELong1);
+        double N2 = toRadians(NLat2);
+        double E2 = toRadians(ELong2);
+
+        double u = sin((N2 - N1) / 2.0);
+        double v = sin((E2 - E1) / 2.0);
+        return 6371.0 * 2.0 * asin(sqrt(u * u + cos(N1) * cos(N2) * v * v));
     }
 
 }
