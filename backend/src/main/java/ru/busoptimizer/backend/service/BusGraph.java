@@ -66,18 +66,29 @@ public class BusGraph {
 
         boolean[] visited = new boolean[(int) stopsRepository.count()];
         Queue<Integer> queue = new LinkedList<>();
-        String startBusNames = "75";
+        List<String> startBusNames = new ArrayList<>();
 
         visited[s] = true;
         queue.add(s);
 
+        boolean firstStep = true;
+
         while (!queue.isEmpty()) {
             Integer p = queue.poll();
+
+            if (firstStep) {
+                for(int i = 0; i < stopsRepository.count(); i++) {
+                    if (busGraph.get(p).get(i).exist) {
+                        startBusNames.addAll(busGraph.get(p).get(i).busNames);
+                    }
+                }
+                firstStep = false;
+            }
 
             for(int i = 0; i < stopsRepository.count(); i++) {
                 if (!visited[i] && busGraph.get(p).get(i).exist) {
                     visited[i] = true;
-                    if (busGraph.get(p).get(i).busNames.contains(startBusNames)) {
+                    if (busGraph.get(p).get(i).busNames.containsAll(startBusNames)) {
                         queue.add(i);
                     }
                     else {
@@ -94,6 +105,9 @@ public class BusGraph {
         for(int i = 0; i < stopsRepository.count(); i++) {
             List<Integer> farStops = bfs(i);
 
+            if (i == 28) {
+                System.out.println(farStops.toString());
+            }
         }
     }
 }
