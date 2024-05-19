@@ -71,11 +71,15 @@ public class DataController {
         return HttpStatus.OK;
     }
 
-    @GetMapping("/create_graph")
+    @GetMapping("/graph/create_graph")
     @ResponseStatus(code = HttpStatus.CREATED)
     public void createGraph() {
         busGraph.fillingGraph();
-
     }
 
+    @GetMapping("/graph/far_stops")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public void startScanning() {
+        busGraph.findFarStops();
+    }
 }

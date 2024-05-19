@@ -8,10 +8,7 @@ import ru.busoptimizer.backend.repository.BusesPointsRepository;
 import ru.busoptimizer.backend.repository.BusesRepository;
 import ru.busoptimizer.backend.repository.StopsRepository;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -64,11 +61,39 @@ public class BusGraph {
         }
     }
 
-    public void findFarPoints() {
+    public List<Integer> bfs(int s) {
+        List<Integer> farStops = new ArrayList<>();
+
+        boolean[] visited = new boolean[(int) stopsRepository.count()];
         Queue<Integer> queue = new LinkedList<>();
+        String startBusNames = "75";
+
+        visited[s] = true;
+        queue.add(s);
 
         while (!queue.isEmpty()) {
-            
+            Integer p = queue.poll();
+
+            for(int i = 0; i < stopsRepository.count(); i++) {
+                if (!visited[i] && busGraph.get(p).get(i).exist) {
+                    visited[i] = true;
+                    if (busGraph.get(p).get(i).busNames.contains(startBusNames)) {
+                        queue.add(i);
+                    }
+                    else {
+                        farStops.add(i);
+                    }
+                }
+            }
+        }
+
+        return farStops;
+    }
+
+    public void findFarStops() {
+        for(int i = 0; i < stopsRepository.count(); i++) {
+            List<Integer> farStops = bfs(i);
+
         }
     }
 }
