@@ -20,6 +20,7 @@ import static java.lang.Math.toRadians;
 import static java.lang.Math.asin;
 import static java.lang.Math.cos;
 import static java.lang.Math.sqrt;
+import static ru.busoptimizer.backend.service.Distance.calcDistance;
 
 @RequiredArgsConstructor
 @Service
@@ -66,7 +67,7 @@ public class PointsService {
         }*/
         List<Points> stopsPoints = pointsRepository.findByStops_Id(point.getStops().getId());
         if (!stopsPoints.isEmpty()) {
-            String mainName = stopsRepository.getById(point.getStops().getId()).getName();
+            String mainName = stopsRepository.getById(point.getStops().getId()).getName(); //Заменить на findNameById
 
             boolean findHerStop = false;
             long idHerStop = point.getStops().getId();
@@ -137,17 +138,6 @@ public class PointsService {
         if (point != null) {
             pointsRepository.deleteById(id);
         }
-    }
-
-    private double calcDistance(double NLat1, double ELong1, double NLat2, double ELong2) {
-        double N1 = toRadians(NLat1);
-        double E1 = toRadians(ELong1);
-        double N2 = toRadians(NLat2);
-        double E2 = toRadians(ELong2);
-
-        double u = sin((N2 - N1) / 2.0);
-        double v = sin((E2 - E1) / 2.0);
-        return 6371.0 * 2.0 * asin(sqrt(u * u + cos(N1) * cos(N2) * v * v));
     }
 
 }

@@ -15,10 +15,7 @@ import ru.busoptimizer.backend.mapper.BusesMapperImpl;
 import ru.busoptimizer.backend.mapper.BusesPointsMapperImpl;
 import ru.busoptimizer.backend.mapper.PointsMapperImpl;
 import ru.busoptimizer.backend.mapper.StopsMapperImpl;
-import ru.busoptimizer.backend.service.BusesPointsService;
-import ru.busoptimizer.backend.service.BusesService;
-import ru.busoptimizer.backend.service.PointsService;
-import ru.busoptimizer.backend.service.StopsService;
+import ru.busoptimizer.backend.service.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +33,7 @@ public class DataController {
     private final PointsMapperImpl pointsMapper;
     private final BusesPointsService busesPointsService;
     private final BusesPointsMapperImpl busesPointsMapper;
+    private final BusGraph busGraph;
 
     @PostMapping("/insert")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -71,6 +69,13 @@ public class DataController {
         }
 
         return HttpStatus.OK;
+    }
+
+    @GetMapping("/create_graph")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public void createGraph() {
+        busGraph.fillingGraph();
+
     }
 
 }
