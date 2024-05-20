@@ -79,10 +79,15 @@ public class DataController {
 
     @GetMapping("/graph/far_stops")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void startScanning() {
-        List<List<Double>> farStops = busGraph.findFarStops();
-        for(List<Double> segment : farStops) {
-            System.out.println(segment.toString());
-        }
+    public List<List<Double>> startScanning() {
+        return busGraph.findFarStops();
     }
+
+    @GetMapping("/find_far_stops")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public List<List<Double>> findFarStops() {
+        busGraph.fillingGraph();
+        return busGraph.findFarStops();
+    }
+
 }

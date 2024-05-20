@@ -115,8 +115,8 @@ public class BusGraph {
 
             for (Integer farStop : farStops) {
                 List<Integer> backFarStops = bfs(farStop);
-                System.out.println(farStop);
-                System.out.println(backFarStops.toString());
+                /*System.out.println(farStop);
+                System.out.println(backFarStops.toString());*/
 
                 double minDist = 1000.0;
                 double minN1 = 0.0;
@@ -144,8 +144,8 @@ public class BusGraph {
                 }
 
                 if (minDist <= 1.0) {
-                    System.out.println(minDist);
-                    System.out.println(minN1 + " " + minE1 + " " + minN2 + " " + minE2);
+                    /*System.out.println(minDist);
+                    System.out.println(minN1 + " " + minE1 + " " + minN2 + " " + minE2);*/
                     boolean exist = false;
                     if (!Segments.isEmpty()) {
                         for(List<Double> ansSegment : Segments) {
