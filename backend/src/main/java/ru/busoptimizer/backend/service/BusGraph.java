@@ -4,11 +4,14 @@ import lombok.*;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.busoptimizer.backend.entity.BusesPoints;
+import ru.busoptimizer.backend.entity.Points;
 import ru.busoptimizer.backend.repository.BusesPointsRepository;
 import ru.busoptimizer.backend.repository.BusesRepository;
+import ru.busoptimizer.backend.repository.PointsRepository;
 import ru.busoptimizer.backend.repository.StopsRepository;
 
 import java.util.*;
+import static ru.busoptimizer.backend.service.Distance.calcDistance;
 
 @RequiredArgsConstructor
 @Service
@@ -28,6 +31,7 @@ public class BusGraph {
 
     List<List<Node>> busGraph = new ArrayList<>();
     private final BusesRepository busesRepository;
+    private final PointsRepository pointsRepository;
 
     public void fillingGraph() {
         //Инициализация матрицы
@@ -102,12 +106,44 @@ public class BusGraph {
     }
 
     public void findFarStops() {
-        for(int i = 0; i < stopsRepository.count(); i++) {
-            List<Integer> farStops = bfs(i);
+        //for(int i = 0; i < stopsRepository.count(); i++) {
+            List<Integer> farStops = bfs(0);
 
-            if (i == 28) {
-                System.out.println(farStops.toString());
+            for (Integer farStop : farStops) {
+                List<Integer> backFarStops = bfs(farStop);
+                System.out.println(farStop);
+                System.out.println(backFarStops.toString());
+
+                double minDist = 1000.0;
+                double minN1 = 0.0;
+                double minE1 = 0.0;
+                double minN2 = 0.0;
+                double minE2 = 0.0;
+
+                for (Integer backStop : backFarStops) {
+                    List<Points> farPoints = pointsRepository.findByStops_Id(Long.valueOf(farStop) + 1);
+                    List<Points> backPoints = pointsRepository.findByStops_Id(Long.valueOf(backStop) + 1);
+
+
+                    for(Points farPoint : farPoints) {
+                        for(Points backPoint : backPoints){
+                           double calcDist = calcDistance(farPoint.getN_latitude(), farPoint.getE_longitude(), backPoint.getN_latitude(), backPoint.getE_longitude());
+                           if (calcDist < minDist) {
+                               minDist = calcDist;
+                               minN1 = backPoint.getN_latitude();
+                               minE1 = backPoint.getE_longitude();
+                               minN2 = farPoint.getN_latitude();
+                               minE2 = farPoint.getE_longitude();
+                           }
+                        }
+                    }
+                }
+
+                if (minDist <= 1.0) {
+                    System.out.println(minDist);
+                }
+
             }
-        }
+        //}
     }
 }
