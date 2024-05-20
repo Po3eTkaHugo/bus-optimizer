@@ -105,8 +105,11 @@ public class BusGraph {
         return farStops;
     }
 
-    public void findFarStops() {
+    public List<List<Double>> findFarStops() {
+        List<List<Double>> Segments = new ArrayList<>();
+
         for(int i = 0; i < busesRepository.count(); i++) {
+
             List<BusesPoints> busesPoints = busesPointsRepository.findByBuses_Id((long) (i + 1));
             List<Integer> farStops = bfs((int) (busesPoints.get(0).getPoints().getStops().getId() - 1));
 
@@ -121,8 +124,8 @@ public class BusGraph {
                 double minN2 = 0.0;
                 double minE2 = 0.0;
 
-                for (Integer backStop : backFarStops) {
-                    List<Points> farPoints = pointsRepository.findByStops_Id(Long.valueOf(farStop) + 1);
+                List<Points> farPoints = pointsRepository.findByStops_Id(Long.valueOf(farStop) + 1);
+                for (Integer backStop : backFarStops) { //лишний???
                     List<Points> backPoints = pointsRepository.findByStops_Id(Long.valueOf(backStop) + 1);
 
 
@@ -142,9 +145,29 @@ public class BusGraph {
 
                 if (minDist <= 1.0) {
                     System.out.println(minDist);
+                    System.out.println(minN1 + " " + minE1 + " " + minN2 + " " + minE2);
+                    boolean exist = false;
+                    if (!Segments.isEmpty()) {
+                        for(List<Double> ansSegment : Segments) {
+                            if ((ansSegment.get(0) == minN1 && ansSegment.get(1) == minE1 && ansSegment.get(2) == minN2 && ansSegment.get(3) == minE2) ||
+                                    (ansSegment.get(0) == minN2 && ansSegment.get(1) == minE2 && ansSegment.get(2) == minN1 && ansSegment.get(3) == minE1)) {
+                                exist = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!exist) {
+                        List<Double> segment = new ArrayList<>();
+                        segment.add(minN1);
+                        segment.add(minE1);
+                        segment.add(minN2);
+                        segment.add(minE2);
+                        Segments.add(segment);
+                    }
                 }
-
             }
         }
+
+        return Segments;
     }
 }
