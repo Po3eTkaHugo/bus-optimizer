@@ -10,4 +10,5 @@ public interface BusesPointsRepository extends JpaRepository<BusesPoints, Long> 
 
 
     List<BusesPoints> findByBuses_Id(Long id);
+
 }

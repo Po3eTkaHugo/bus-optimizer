@@ -106,8 +106,9 @@ public class BusGraph {
     }
 
     public void findFarStops() {
-        //for(int i = 0; i < stopsRepository.count(); i++) {
-            List<Integer> farStops = bfs(0);
+        for(int i = 0; i < busesRepository.count(); i++) {
+            List<BusesPoints> busesPoints = busesPointsRepository.findByBuses_Id((long) (i + 1));
+            List<Integer> farStops = bfs((int) (busesPoints.get(0).getPoints().getStops().getId() - 1));
 
             for (Integer farStop : farStops) {
                 List<Integer> backFarStops = bfs(farStop);
@@ -144,6 +145,6 @@ public class BusGraph {
                 }
 
             }
-        //}
+        }
     }
 }
