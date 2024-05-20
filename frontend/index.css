@@ -4,4 +4,48 @@ body {
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
+  flex-direction: row;
+  font-family: "Cooper Black", serif;
+}
+
+#map {
+  width: 75%;
+  height: 100%
+}
+
+.header {
+  width: 25%;
+  height: 100%;
+  background-color: #aee37d;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: bold;
+  text-align: center;
+  color: #fafaf2;
+  user-select: none;
+}
+
+.start-btn {
+  font-family: inherit;
+  font-size: 24px;
+  user-select: none;
+  align-self: center;
+  margin-top: 20%;
+  width: 75%;
+  height: 10%;
+  border: none;
+  border-radius: 10px;
+  background-color: #fafaf2;
+}
+
+.start-btn:hover{
+  background-color: #f0f0e8;
+}
+
+.start-btn:active {
+  background-color: #dcdcd4;
 }

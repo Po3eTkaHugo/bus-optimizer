@@ -105,8 +105,8 @@ public class BusGraph {
         return farStops;
     }
 
-    public List<List<Double>> findFarStops() {
-        List<List<Double>> Segments = new ArrayList<>();
+    public List<List<List<Double>>> findFarStops() {
+        List<List<List<Double>>> Segments = new ArrayList<>();
 
         for(int i = 0; i < busesRepository.count(); i++) {
 
@@ -144,24 +144,28 @@ public class BusGraph {
                 }
 
                 if (minDist <= 1.0) {
-                    /*System.out.println(minDist);
-                    System.out.println(minN1 + " " + minE1 + " " + minN2 + " " + minE2);*/
+                    /*System.out.println(minDist);*/
+                    System.out.println(minN1 + " " + minE1 + " " + minN2 + " " + minE2);
                     boolean exist = false;
                     if (!Segments.isEmpty()) {
-                        for(List<Double> ansSegment : Segments) {
-                            if ((ansSegment.get(0) == minN1 && ansSegment.get(1) == minE1 && ansSegment.get(2) == minN2 && ansSegment.get(3) == minE2) ||
-                                    (ansSegment.get(0) == minN2 && ansSegment.get(1) == minE2 && ansSegment.get(2) == minN1 && ansSegment.get(3) == minE1)) {
+                        for(List<List<Double>> ansSegment : Segments) {
+                            if ((ansSegment.get(0).get(0) == minN1 && ansSegment.get(0).get(1) == minE1 && ansSegment.get(1).get(0) == minN2 && ansSegment.get(1).get(1) == minE2) ||
+                                    (ansSegment.get(0).get(0) == minN2 && ansSegment.get(0).get(1) == minE2 && ansSegment.get(1).get(0) == minN1 && ansSegment.get(1).get(1) == minE1)) {
                                 exist = true;
                                 break;
                             }
                         }
                     }
                     if (!exist) {
-                        List<Double> segment = new ArrayList<>();
-                        segment.add(minN1);
-                        segment.add(minE1);
-                        segment.add(minN2);
-                        segment.add(minE2);
+                        List<List<Double>> segment = new ArrayList<>();
+                        List<Double> point1 = new ArrayList<>();
+                        point1.add(minN1);
+                        point1.add(minE1);
+                        List<Double> point2 = new ArrayList<>();
+                        point2.add(minN2);
+                        point2.add(minE2);
+                        segment.add(point1);
+                        segment.add(point2);
                         Segments.add(segment);
                     }
                 }

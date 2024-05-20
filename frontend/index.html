@@ -9,12 +9,21 @@
 
     <script src="https://api-maps.yandex.ru/2.1/?apikey=76a896aa-4a51-4dec-a1b4-4fb45f43b0ef&lang=ru_RU" type="text/javascript"></script>
 
-    <script src="./src/BusOptimizerMap.js" type="text/javascript"></script>
+    <script src="./src/BusOptimizerMap.js" type="module"></script>
   </head>
   <body>
     <!--<div id="root"></div>
     <script type="module" src="./src/main.jsx"></script>-->
-    <div id="map" style="width: 100vw; height: 100vh"></div>
+    <div id="map"></div>
+    <div class="header">
+      <h1 class="title">
+        Bus
+        Optimizer
+      </h1>
 
+      <button class="start-btn">
+        Start Scanning
+      </button>
+    </div>
   </body>
 </html>

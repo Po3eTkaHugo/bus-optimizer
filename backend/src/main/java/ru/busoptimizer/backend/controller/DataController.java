@@ -79,15 +79,23 @@ public class DataController {
 
     @GetMapping("/graph/far_stops")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public List<List<Double>> startScanning() {
+    public List<List<List<Double>>> startScanning() {
         return busGraph.findFarStops();
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/find_far_stops")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public List<List<Double>> findFarStops() {
+    public List<List<List<Double>>> findFarStops() {
         busGraph.fillingGraph();
         return busGraph.findFarStops();
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/test")
+    @ResponseStatus(code = HttpStatus.OK)
+    public String test() {
+        return "Hello";
     }
 
 }
