@@ -3,8 +3,10 @@ package ru.busoptimizer.backend.service;
 import lombok.*;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import ru.busoptimizer.backend.entity.Buses;
 import ru.busoptimizer.backend.entity.BusesPoints;
 import ru.busoptimizer.backend.entity.Points;
+import ru.busoptimizer.backend.entity.Stops;
 import ru.busoptimizer.backend.repository.BusesPointsRepository;
 import ru.busoptimizer.backend.repository.BusesRepository;
 import ru.busoptimizer.backend.repository.PointsRepository;
@@ -65,34 +67,30 @@ public class BusGraph {
         }
     }
 
-    public List<Integer> bfs(int s) {
+    public List<Integer> bfs(int s, Set<String> bfsBusNames) {
         List<Integer> farStops = new ArrayList<>();
 
         boolean[] visited = new boolean[(int) stopsRepository.count()];
         Queue<Integer> queue = new LinkedList<>();
-        List<String> startBusNames = new ArrayList<>();
 
         visited[s] = true;
         queue.add(s);
 
-        boolean firstStep = true;
-
         while (!queue.isEmpty()) {
             Integer p = queue.poll();
-
-            if (firstStep) {
-                for(int i = 0; i < stopsRepository.count(); i++) {
-                    if (busGraph.get(p).get(i).exist) {
-                        startBusNames.addAll(busGraph.get(p).get(i).busNames);
-                    }
-                }
-                firstStep = false;
-            }
 
             for(int i = 0; i < stopsRepository.count(); i++) {
                 if (!visited[i] && busGraph.get(p).get(i).exist) {
                     visited[i] = true;
-                    if (busGraph.get(p).get(i).busNames.containsAll(startBusNames)) {
+
+                    boolean founded = false;
+                    for (String name : bfsBusNames) {
+                        if (busGraph.get(p).get(i).busNames.contains(name)) {
+                            founded = true;
+                            break;
+                        }
+                    }
+                    if (founded) {
                         queue.add(i);
                     }
                     else {
@@ -111,12 +109,14 @@ public class BusGraph {
         for(int i = 0; i < busesRepository.count(); i++) {
 
             List<BusesPoints> busesPoints = busesPointsRepository.findByBuses_Id((long) (i + 1));
-            List<Integer> farStops = bfs((int) (busesPoints.get(0).getPoints().getStops().getId() - 1));
+            Set<String> startBusName = new HashSet<>();
+            startBusName.add(busesRepository.getById((long) (i + 1)).getName());
+            List<Integer> farStops = bfs((int) (busesPoints.getLast().getPoints().getStops().getId() - 1), startBusName);
 
+            System.out.println("StartBus = " + busesRepository.getById((long) (i + 1)).getName());
             for (Integer farStop : farStops) {
-                List<Integer> backFarStops = bfs(farStop);
-                /*System.out.println(farStop);
-                System.out.println(backFarStops.toString());*/
+                Set<String> busesNames = new HashSet<>();
+                stopsRepository.getById(Long.valueOf(farStop) + 1).getCoordinates().forEach(point -> point.getBusesPoints().forEach(busesPoint -> busesNames.add(busesPoint.getBuses().getName())));
 
                 double minDist = 1000.0;
                 double minN1 = 0.0;
@@ -124,39 +124,47 @@ public class BusGraph {
                 double minN2 = 0.0;
                 double minE2 = 0.0;
 
-                List<Points> farPoints = pointsRepository.findByStops_Id(Long.valueOf(farStop) + 1);
-                for (Integer backStop : backFarStops) { //лишний???
-                    List<Points> backPoints = pointsRepository.findByStops_Id(Long.valueOf(backStop) + 1);
+                    List<Integer> backFarStops = bfs(farStop, busesNames);
+                    //System.out.println("FarBus = " + busName);
+                    System.out.println(farStop);
+                    System.out.println(backFarStops.toString());
 
 
-                    for(Points farPoint : farPoints) {
-                        for(Points backPoint : backPoints){
-                           double calcDist = calcDistance(farPoint.getN_latitude(), farPoint.getE_longitude(), backPoint.getN_latitude(), backPoint.getE_longitude());
-                           if (calcDist < minDist) {
-                               minDist = calcDist;
-                               minN1 = backPoint.getN_latitude();
-                               minE1 = backPoint.getE_longitude();
-                               minN2 = farPoint.getN_latitude();
-                               minE2 = farPoint.getE_longitude();
-                           }
+                    List<Points> farPoints = pointsRepository.findByStops_Id(Long.valueOf(farStop) + 1);
+                    for (Integer backStop : backFarStops) {
+                        List<Points> backPoints = pointsRepository.findByStops_Id(Long.valueOf(backStop) + 1);
+
+
+                        for(Points farPoint : farPoints) {
+                            for(Points backPoint : backPoints){
+                                double calcDist = calcDistance(farPoint.getN_latitude(), farPoint.getE_longitude(), backPoint.getN_latitude(), backPoint.getE_longitude());
+                                if (calcDist < minDist) {
+                                    minDist = calcDist;
+                                    minN1 = backPoint.getN_latitude();
+                                    minE1 = backPoint.getE_longitude();
+                                    minN2 = farPoint.getN_latitude();
+                                    minE2 = farPoint.getE_longitude();
+                                }
+                            }
                         }
                     }
-                }
+
+
 
                 if (minDist <= 1.0) {
-                    /*System.out.println(minDist);*/
-                    System.out.println(minN1 + " " + minE1 + " " + minN2 + " " + minE2);
                     boolean exist = false;
                     if (!Segments.isEmpty()) {
                         for(List<List<Double>> ansSegment : Segments) {
-                            if ((ansSegment.get(0).get(0) == minN1 && ansSegment.get(0).get(1) == minE1 && ansSegment.get(1).get(0) == minN2 && ansSegment.get(1).get(1) == minE2) ||
-                                    (ansSegment.get(0).get(0) == minN2 && ansSegment.get(0).get(1) == minE2 && ansSegment.get(1).get(0) == minN1 && ansSegment.get(1).get(1) == minE1)) {
+                            if ((Objects.equals(ansSegment.get(0).get(0),minN1) && Objects.equals(ansSegment.get(0).get(1), minE1) && Objects.equals(ansSegment.get(1).get(0), minN2) && Objects.equals(ansSegment.get(1).get(1), minE2)) ||
+                                    (Objects.equals(ansSegment.get(0).get(0), minN2) && Objects.equals(ansSegment.get(0).get(1), minE2) && Objects.equals(ansSegment.get(1).get(0), minN1) && Objects.equals(ansSegment.get(1).get(1), minE1))) {
                                 exist = true;
                                 break;
                             }
                         }
                     }
                     if (!exist) {
+                        System.out.println(minDist);
+                        System.out.println(minN1 + " " + minE1 + " " + minN2 + " " + minE2);
                         List<List<Double>> segment = new ArrayList<>();
                         List<Double> point1 = new ArrayList<>();
                         point1.add(minN1);
