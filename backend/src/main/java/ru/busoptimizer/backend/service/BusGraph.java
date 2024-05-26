@@ -47,10 +47,6 @@ public class BusGraph {
         }
 
         //Заполнение матрицы
-        /*long k = 1;
-        List<BusesPoints> busesPoints = busesPointsRepository.findByBuses_Id(k);
-        System.out.println(busesPoints.get(0).getPoints().getStops().getId());*/
-
         long countBus = busesRepository.count();
         for (long i = 0; i < countBus; i++) {
             List<BusesPoints> busesPoints = busesPointsRepository.findByBuses_Id(i + 1);
@@ -125,7 +121,6 @@ public class BusGraph {
                 double minE2 = 0.0;
 
                     List<Integer> backFarStops = bfs(farStop, busesNames);
-                    //System.out.println("FarBus = " + busName);
                     System.out.println(farStop);
                     System.out.println(backFarStops.toString());
 
