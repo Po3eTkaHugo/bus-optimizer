@@ -36,35 +36,6 @@ public class PointsService {
     }
 
     public Points savePoint(Points point) {
-        /*List<Points> stopsPoints = pointsRepository.findByStops_Id(point.getStops().getId());
-
-        if (!stopsPoints.isEmpty()) {
-            for(Points stopPoint : stopsPoints) {
-                double distance = calcDistance(point.getN_latitude(), point.getE_longitude(), stopPoint.getN_latitude(), stopPoint.getE_longitude());
-
-                if (distance > 0.5) {
-                    String mainName = stopPoint.getStops().getName();
-                    List<Stops> allOtherStops = stopsRepository.findByNameContaining(mainName);
-
-                    allOtherStops.forEach(otherStop -> {
-                        List<Points> otherPoints = pointsRepository.findByStops_Id(otherStop.getId());
-                        otherPoints.forEach(otherPoint -> {
-                            double otherDistance = calcDistance(point.getN_latitude(), point.getE_longitude(), otherPoint.getN_latitude(), otherPoint.getE_longitude());
-
-                            if (otherDistance > 0.5) {
-                                Stops newStop = stopsService.saveStop(stopsMapper.toEntity(new StopsDto(
-                                        mainName + " - " + stopsRepository.countByNameContaining(mainName))));
-
-                                pointsRepository.save(pointsMapper.toEntity(new PointsDto(
-                                        point.getN_latitude(),
-                                        point.getE_longitude(),
-                                        newStop.getId())));
-                            }
-                        });
-                    });
-                }
-            }
-        }*/
         List<Points> stopsPoints = pointsRepository.findByStops_Id(point.getStops().getId());
         if (!stopsPoints.isEmpty()) {
             String mainName = stopsRepository.getById(point.getStops().getId()).getName(); //Заменить на findNameById

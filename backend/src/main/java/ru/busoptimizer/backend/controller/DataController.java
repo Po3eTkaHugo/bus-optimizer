@@ -91,11 +91,4 @@ public class DataController {
         return busGraph.findFarStops();
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping("/test")
-    @ResponseStatus(code = HttpStatus.OK)
-    public String test() {
-        return "Hello";
-    }
-
 }
